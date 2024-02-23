@@ -1,0 +1,117 @@
+'VBA通配符
+
+'1.星号(*)：表示任意多个字符（可以为0个）
+'2.问号(?)：表示任意一个字符（必须为1个）
+'3.井号(#)：表示任意一个数字（必须为1个）
+'4.感叹号(!)：逻辑非，表示不是，如[!0-9]表示非数字
+'5.方括号([])：表示一个范围，如[A-Z a-z]表示全部字母
+
+
+' 1）星号（*）的使用
+
+' 1.找出以"VBA"开头的记录:(包括记录"VBA")
+sub test()
+dim i as integer
+for i =1 to 100
+if range("a" & i) like "VBA*" then
+range("a" & i) .interior.color=65535
+endif
+next
+end sub
+
+
+'2）问号（?）的使用
+
+'2.找出以"V"开头，7个字符、第5位是“B”的记录。
+
+Sub test()
+Dim i As Integer
+For i = 1 To 100
+If Range("a" & i) Like "V???B??" Then
+Range("a" & i).Interior.Color = 65535
+End If
+Next
+End Sub
+
+
+
+'3）方括号[]的使用
+
+'3.找出第一位以"A-H"开头的记录。
+
+Sub test()
+Dim i As Integer
+For i = 1 To 100
+If Range("a" & i) Like "[A-H]*" Then
+Range("a" & i).Interior.Color = 65535
+End If
+Next
+End Sub
+
+
+'4)井号(#)的使用
+
+'4.找出前两位以数字开头，8个字符的记录。
+
+Sub test()
+Dim i As Integer
+For i = 1 To 100
+If Range("a" & i) Like "##??????" Then
+Range("a" & i).Interior.Color = 65535
+End If
+Next
+End Sub
+
+
+
+'5)逻辑非(!)的使用
+
+'5.找出第一位以数字开头 第三位不是数字的记录。
+
+Sub test()
+Dim i As Integer
+For i = 1 To 100
+If Range("a" & i) Like "#?[!0-9]*" Then
+Range("a" & i).Interior.Color = 65535
+End If
+Next
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

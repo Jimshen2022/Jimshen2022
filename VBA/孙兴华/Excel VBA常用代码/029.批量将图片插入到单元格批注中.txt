@@ -1,0 +1,52 @@
+Sub AddCommentPic()
+    Dim arr, i&, k&, n&, b As Boolean
+    Dim strPicName$, strPicPath$, strFdPath$
+    Dim rngData As Range, rngEach As Range
+    'On Error Resume Next
+    '用户选择图片所在的文件夹
+    With Application.FileDialog(msoFileDialogFolderPicker)
+       If .Show Then strFdPath = .SelectedItems(1) Else: Exit Sub
+    End With
+    If Right(strFdPath, 1) <> "\" Then strFdPath = strFdPath & "\"
+    Set rngData = Application.InputBox("请选择需要插入图片到批注中的单元格区域", Type:=8)
+    '用户选择需要插入图片到批注中的单元格或区域
+    If rngData.Count = 0 Then Exit Sub
+    Set rngData = Intersect(rngData.Parent.UsedRange, rngData)
+    'intersect语句避免用户选择整列单元格，造成无谓运算的情况
+    If rngData Is Nothing Then MsgBox "选择单元格不能全为空。": Exit Sub
+    arr = Array(".jpg", ".jpeg", ".bmp", ".png", ".gif")
+    '用数组变量记录五种文件格式
+    Application.ScreenUpdating = False
+    For Each rngEach In rngData
+    '遍历选择区域的每一个单元格
+        If Not rngEach.Comment Is Nothing Then rngEach.Comment.Delete  '删除旧的批注
+        strPicName = rngEach.Text '图片名称
+        If Len(strPicName) Then '如果单元格存在值
+            strPicPath = strFdPath & strPicName '图片路径
+            b = False 'pd变量标记是否找到相关图片
+            For i = 0 To UBound(arr)
+            '由于不确定用户的图片格式，因此遍历图片格式
+                If Len(Dir(strPicPath & arr(i))) Then
+                '如果存在相关文件
+                    rngEach.AddComment '增加批注
+                    With rngEach.Comment
+                        .Visible = True '批注可见
+                        .Text Text:=""
+                        .Shape.Select True '选中批注图形
+                        Selection.ShapeRange.Fill.UserPicture strPicPath & arr(i)
+                        '插入图片到批注中
+                        .Shape.Height = 150 '图形的高度，可以根据需要自己调整
+                        .Shape.Width = 150 '图形的宽度，可以根据需要自己调整
+                        .Visible = False '取消显示
+                    End With
+                    b = True '标记找到结果
+                    n = n + 1 '累加找到结果的个数
+                    Exit For '找到结果后就可以退出文件格式循环
+                End If
+            Next
+            If b = False Then k = k + 1  '如果没找到图片累加个数
+        End If
+    Next
+    MsgBox "共处理成功" & n & "个图片，另有" & k & "个非空单元格未找到对应的图片。"
+    Application.ScreenUpdating = True
+End Sub

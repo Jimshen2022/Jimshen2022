@@ -1,0 +1,17 @@
+Sub GetShtName()
+    Dim k As Long, sht As Worksheet
+    Application.ScreenUpdating = False
+    With Columns(1)
+        .ClearContents '清空A列原有数据
+        .NumberFormat = "@" '设置单元格格式为文本
+    End With
+    Cells(1, 1) = "目录"
+    k = 1
+    For Each sht In ThisWorkbook.Worksheets '遍历工作表
+        If sht.Name <> ActiveSheet.Name Then '如果sht不等于当前工作表名称
+            k = k + 1 '累加工作表个数
+            Cells(k, 1) = sht.Name '工作表名称写入A列
+        End If
+    Next
+    Application.ScreenUpdating = True
+End Sub

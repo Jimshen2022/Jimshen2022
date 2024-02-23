@@ -1,0 +1,16 @@
+Sub SortSht()
+    Dim shtActive As Worksheet, i As Long
+    Dim arr, strShtName As String
+    On Error Resume Next
+    Application.ScreenUpdating = False
+    Set shtActive = ActiveSheet '当前表赋值变量shtactive
+    arr = Range("a1:a" & Cells(Rows.Count, 1).End(xlUp).Row)
+    'A列数据装入数组arr
+    For i = 2 To UBound(arr) '遍历数组arr
+        strShtName = arr(i, 1)
+        Worksheets(strShtName).Move after:=Worksheets(i - 1)
+        '指定工作表按顺序排放
+    Next
+    shtActive.Select '回到操作表
+    Application.ScreenUpdating = True
+End Sub

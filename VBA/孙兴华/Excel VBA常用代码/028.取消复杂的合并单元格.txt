@@ -1,0 +1,23 @@
+Sub UnMergeRange2() '取消合并单元格
+Dim MaxRow As Integer '
+Dim Rng As Range
+Dim x%, y%, m%, n%, i%
+Dim Rng2 As Range
+    On Error Resume Next
+    Set Rng = Application.InputBox("请选择需要取消合并单元格的区域：", _
+                "区域选择", , , , , , 8)
+    
+    For x = 1 To Rng.Rows.Count
+        For y = 1 To Rng.Columns.Count
+            Set Rng2 = Rng.Cells(x, y)
+            i = Rng2.MergeArea.Count
+            If i > 1 Then
+                m = Rng2.MergeArea.Rows.Count
+                n = Rng2.MergeArea.Columns.Count
+                Rng2.UnMerge '取消合并单元格
+                Rng2.Resize(m, n).Value = Rng2.Value
+            End If
+        Next
+    Next
+    
+End Sub

@@ -1,0 +1,23 @@
+Sub EachShtToWorkbook()
+    Dim sht As Worksheet, strPath As String
+    With Application.FileDialog(msoFileDialogFolderPicker)
+   '选择保存工作薄的文件路径
+        If .Show Then strPath = .SelectedItems(1) Else Exit Sub
+        '读取选择的文件路径,如果用户未选取路径则退出程序
+    End With
+    If Right(strPath, 1) <> "\" Then strPath = strPath & "\"
+    Application.DisplayAlerts = False
+    '取消显示系统警告和消息，避免重名工作簿无法保存。当有重名工作簿时，会直接覆盖保存。
+    Application.ScreenUpdating = False '取消屏幕刷新
+    For Each sht In Worksheets '遍历工作表
+        sht.Copy '复制工作表，工作表单纯复制后，会成为活动工作薄
+        With ActiveWorkbook
+            .SaveAs strPath & sht.Name, xlWorkbookDefault
+            '保存活动工作薄到指定路径下，以当前系统默认文件格式
+            .Close True '关闭工作薄并保存
+        End With
+    Next
+    MsgBox "处理完成。", , "提醒"
+    Application.ScreenUpdating = True '恢复屏幕刷新
+    Application.DisplayAlerts = True '恢复显示系统警告和消息
+End Sub

@@ -1,0 +1,39 @@
+'在所有过程之前用Dim语句定义的变量r1是模块级变量，应模块中所有的过程都可以使用它
+Dim r1 '定义一个模块给变量，用户保存单元格的数据
+'第一个事件过程，用于记录被更改前单元格中保存的数据
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+If Target.Cells.Count <> 1 Then Exit Sub '选中多个单元格时退出程序
+If Target.Formula = "" Then '根据选中单元格中保存的数据，确定给变量r1赋什么值
+    r1 = "空"
+Else
+    r1 = Target.Text
+End If
+End Sub
+'第二个事件过程，用于批注记录单元格修改前后的信息
+Private Sub Worksheet_Change(ByVal Target As Range)
+If Target.Cells.Count <> 1 Then Exit Sub
+'定义变量保存单元格修改后的内容
+Dim r2
+'判断单元格是否被修改为空单元格
+If Target.Formula = "" Then
+    r2 = "空"
+Else
+    r2 = Target.Formula
+End If
+'如果单元格修改前后的内容一样则退出程序
+If r1 = r2 Then Exit Sub
+'定义一个批注变量
+Dim r3
+'定义一个变量保存批注内容
+Dim r4
+'将被修改单元格的批注赋给变量r3
+Set r3 = Target.Comment
+'如果单元格中没有批注则新建批注
+If r3 Is Nothing Then Target.AddComment
+'将批注的内容保存到变量r4中
+r4 = Target.Comment.Text
+'重新修改批注的内容=原批注内容+当前日期和时间+原内容+修改后的新内容
+Target.Comment.Text Text:=r4 & Chr(10) & Format(Now(), "yyyy-mm-dd hh:mm") & "原内容:" & r1 & "修改为:" & r2
+'根据批注内容自动调整批注大小
+Target.Comment.Shape.TextFrame.AutoSize = True
+End Sub

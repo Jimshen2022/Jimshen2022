@@ -1,0 +1,12 @@
+-- 1.12 将null转换为实际值
+SELECT COALESCE(comm,0)
+FROM EMP
+
+-- CASE 
+SELECT CASE
+		WHEN comm IS NOT NULL THEN comm
+		ELSE 0 
+		END
+FROM EMP
+
+

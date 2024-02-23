@@ -1,0 +1,1 @@
+Application.Speech.Speak "找到了xxxx”

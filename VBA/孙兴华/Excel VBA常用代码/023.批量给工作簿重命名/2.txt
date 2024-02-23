@@ -1,0 +1,9 @@
+Sub ChangeFileName()
+    Dim r, i As Long
+    r = Range("a1").CurrentRegion '数据装入数组
+    For i = 2 To UBound(r)
+    '标题行不要，从数组第二行开始遍历
+        Name r(i, 1) As r(i, 2) 'Name语句重命名
+    Next
+    MsgBox "更名完成。"
+End Sub

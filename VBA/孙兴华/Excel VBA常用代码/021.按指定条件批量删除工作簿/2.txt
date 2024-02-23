@@ -1,0 +1,9 @@
+Sub DeleteFile()
+    Dim r, i As Long
+    r = Range("a1").CurrentRegion '数据装入数组
+    For i = 2 To UBound(r)
+    '标题行不要，从数组第二行开始遍历
+        If r(i, 2) = "删除" Then Kill r(i, 1) 'Kill语句删除指定文件
+    Next
+    MsgBox "完成。"
+End Sub

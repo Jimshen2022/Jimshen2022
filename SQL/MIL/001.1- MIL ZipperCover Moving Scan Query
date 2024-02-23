@@ -1,0 +1,72 @@
+-- MIL UnKits Received Carton By Shift create by Jimshen on Jan.03.2022
+
+
+SELECT t1.AACOD1,t1.AATWHS,t1.AACOD1,t1.AATWHS, t1.Location, t1.AAORD#, t1.AAITM#, t1.AAEMP#, t1.AAAUSR, t1.SHIFT, DATE(t1.ScannedTime) AS SCANNEDDATE,t2.ITMCQTY, CEIL(COUNT(t1.SN)/t2.ITMCQTY) AS Cartons 
+FROM (
+SELECT  CHAR(a.AASER#) as SN,a.AACOD1,a.AATWHS,a.AATARA||'00'||a.AATASL||a.AATSEC||a.AATTIR as Location, a.AAORD#,a.AAITM#,
+a.AAEMP#,a.AAAUSR,
+(CASE WHEN char(substr(char(TIME(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))),1,2)||substr(char(TIME(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))),4,2)||
+substr(char(TIME(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))),7,2)) BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END) AS SHIFT,
+MIN(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss')) as ScannedTime
+
+FROM  DISTLIBL.ACTAUDT a
+WHERE a.AACOD1 IN ('MV') and a.AASER#>0 and trim(a.AAITM#) LIKE '%UN' AND trim(a.AAITM#) LIKE 'M%' AND a.AATARA LIKE 'HJ%'
+and a.AAADAT BETWEEN ? AND ? 
+--AND NOT EXISTS 
+--(SELECT 1 FROM  DISTLIBL.ACTAUDT b WHERE b.AACOD1 IN ('MV') and b.AASER#>0 and (trim(b.AAITM#) LIKE '%UN' AND trim(b.AAITM#) NOT LIKE 'M%') AND --b.AATARA LIKE 'HJ%'
+--and b.AAADAT BETWEEN (?-30) AND (?-1) and a.AASER#=b.AASER#)
+
+GROUP BY CHAR(a.AASER#), a.AACOD1,a.AATWHS,a.AATARA||'00'||a.AATASL||a.AATSEC||a.AATTIR,a.AAORD#,a.AAITM#, a.AAEMP#,a.AAAUSR, (CASE WHEN char(substr(char(TIME(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))),1,2)||substr(char(TIME(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))),4,2)||
+substr(char(TIME(to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))),7,2)) BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END)
+) t1, (SELECT DISTINCT t4.ITNBR,t4.ITMCQTY FROM AFILELIBL.ITMEXT t4 GROUP BY t4.ITNBR,t4.ITMCQTY) AS t2
+WHERE t1.AAITM# = t2.ITNBR
+GROUP BY t1.AACOD1,t1.AATWHS,t1.AACOD1,t1.AATWHS, t1.Location, t1.AAORD#, t1.AAITM#, t1.AAEMP#, t1.AAAUSR, t1.SHIFT, DATE(t1.ScannedTime),t2.ITMCQTY
+
+
+
+
+-- MIL ZipperCover Mfg.Not Received, created on Apr.25.2022 by Jimshen
+SELECT  a.AACOD1,a.AATWHS,a.AATARA,a.AATASL,a.AATSEC,a.AATTIR,a.AAORD#,a.AAITM#,char(a.AASER#) SN,
+a.AAEMP#,a.AAADAT,a.AAATIM,a.AAAUSR,a.AAAPGM,
+(values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss')))) as PendingHours,
+(Case  
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<12 then 'a. 0-12 Hours'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<24 then 'b. 12-24 Hours'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<48 then 'c. 1-2 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<72 then 'd. 2-3 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<96 then 'e. 3-4 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<168 then 'f. 4-7 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<336 then 'g. 7-14 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<720 then 'h. 14-30 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<1440 then 'i. 30-60 Days'
+	when (values timestampdiff(8,char(current timestamp -  to_date(a.AAADAT||' '||right('000000'||ltrim(a.AAATIM),6), 'yyyymmdd hh24:mi:ss'))))<2880 then 'j. 60-120 Days'
+	else 'k. over 2 Months' end) as TimeRange 
+FROM  DISTLIBL.ACTAUDT a 
+WHERE a.AAADAT Between ? and ? AND (trim(a.AAITM#) like '%UN' and trim(a.AAITM#) LIKE 'M%') AND  a.AACOD1 IN ('RM') and a.AASER# <>0 
+-- AND NOT EXISTS 
+--(SELECT 1 FROM  DISTLIBL.ACTAUDT b WHERE b.AACOD1 IN ('MV') and b.AASER#>0 and (trim(b.AAITM#) LIKE '%UN' AND trim(b.AAITM#) NOT --LIKE 'M%') AND b.AATARA LIKE 'HJ%'
+--and b.AAADAT BETWEEN (?-90) AND (?-1) and a.AASER#=b.AASER#)
+
+AND a.AASER# NOT IN
+		-- CURRENT AND ARCHIVED F/G SN SA done
+		(SELECT CHAR(trim(a.WCSSERIALNUMBER)) AS SN
+			FROM LLUSAF.WVCNTSD a, LLUSAF.WVCNTHD b 
+			WHERE a.WCSCONTAINERNUMBER = b.WCHCONTAINERNUMBER and b.WCHCONTAINERSTATUS IN ('P','T') 
+			AND b.WCHPOSTEDTIMESTAMP BETWEEN CHAR(CURRENT DATE - 91 days) AND CHAR(CURRENT DATE + 1 days))
+
+AND a.AASER# NOT IN 
+			-- Archived container serial numbers in past 90 days
+		(SELECT CHAR(TRIM(a.WCSSERIALNUMBER)) AS SN
+			FROM ASHLEYARCL.WVCNTSDA a
+			WHERE a.WCSADDEDTIMESTAMP between char(current date - 91 days) and char(current DATE + 1 days)) 
+
+and a.AASER# NOT IN
+		-- SN was loaded into container (temp or real)
+		(SELECT CHAR(trim(a.WCSSERIALNUMBER)) AS SN						
+		FROM LLUSAF.WVCNTSD a, LLUSAF.WVCNTHD b 
+		WHERE a.WCSCONTAINERNUMBER = b.WCHCONTAINERNUMBER and b.WCHCONTAINERSTATUS NOT IN ('P','T')) 
+		
+and a.AASER# NOT IN
+		-- SN is not in Unloaded status
+		(SELECT x.AASER# FROM DISTLIBL.ACTAUDT x where x.AACOD1 in ('UL') AND x.AAADAT BETWEEN ?-90 and ? 
+		AND (trim(x.AAITM#) like '%UN' and trim(a.AAITM#) LIKE 'M%'))

@@ -1,0 +1,116 @@
+-- RM final version
+SELECT AACOD1,AATWHS,AAITM#,AAADAT,AAAUSR,AAAPGM,AAORD#,AAVND#,AAEMP#, t2.ITMCQTY "QTY/CARTON",count(AASER#) as Qty,t3.itcls,
+(CASE 
+        WHEN t3.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t3.ITCLS IN ('WVBC','WVHC') THEN 'Foundation'
+        WHEN t3.ITCLS IN ('SLDK') THEN 'RP'
+        WHEN t3.ITCLS LIKE 'T%' THEN 'RP'
+        WHEN t3.ITCLS IN ('ZKIS') THEN 'Bedding'
+        WHEN t3.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t3.ITCLS LIKE 'Z%' AND t3.ITCLS LIKE '%K' THEN 'UnKits'
+        WHEN t3.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t3.ITCLS IN ('BBFR') THEN 'Verona'
+        WHEN t3.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB') THEN 'CG'
+        WHEN t3.ITCLS LIKE 'Z%' THEN 'UPH'
+        ELSE 'Check' END) AS Product,
+(CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END) AS SHIFT,ceil(count(AASER#)/t2.ITMCQTY) as CARTONS
+			
+
+FROM DISTLIBL.ACTAUDT t1, AFILELIBL.ITMEXT t2, AMFLIBL.ITEMBL t3 
+
+WHERE (t1.AAADAT Between ? And ?) AND (t1.AATWHS='51') and (AACOD1 = 'RM') AND (AASER# >0 ) and
+ (t1.AAITM# = t2.ITNBR) and t1.AATWHS = t3.HOUSE and t1.aaitm#=t3.itnbr and t2.itnbr=t3.itnbr
+Group by AACOD1,AATWHS,AAITM#,AAADAT,AAAUSR,AAAPGM,AAORD#,AAVND#,AAEMP#, t2.ITMCQTY, t3.itcls, 
+(CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END)
+
+
+
+
+
+-- RM Version by SN 
+SELECT AACOD1,AATWHS,AAITM#,AAADAT,CHAR(AAATIM) AS TIME,AAAUSR,AAAPGM,AAORD#,AAVND#,AAEMP#, t2.ITMCQTY,char(AASER#) as SN,t3.itcls,
+(CASE 
+        WHEN t3.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t3.ITCLS IN ('WVBC','WVHC') THEN 'Foundation'
+        WHEN t3.ITCLS IN ('SLDK') THEN 'RP'
+        WHEN t3.ITCLS LIKE 'T%' THEN 'RP'
+        WHEN t3.ITCLS IN ('ZKIS') THEN 'Bedding'
+        WHEN t3.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t3.ITCLS LIKE 'Z%' AND t3.ITCLS LIKE '%K' THEN 'Un-Kits'
+        WHEN t3.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t3.ITCLS IN ('BBFR') THEN 'Verona'
+        WHEN t3.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB') THEN 'CG'
+        WHEN t3.ITCLS LIKE 'Z%' THEN 'UPH'
+        ELSE 'Check' END) AS Product,
+(CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END) AS SHIFT
+			
+
+FROM DISTLIBL.ACTAUDT t1, AFILELIBL.ITMEXT t2, AMFLIBL.ITEMBL t3 
+
+WHERE (t1.AAADAT Between ? And ?) AND (t1.AATWHS='51') and (AACOD1 = 'RM') AND (AASER# >0 ) and
+ (t1.AAITM# = t2.ITNBR) and t1.AATWHS = t3.HOUSE and t1.aaitm#=t3.itnbr and t2.itnbr=t3.itnbr
+
+
+-- MF BY SHIFT 
+
+SELECT t1.AACOD1, t1.AACOD2, t1.AATWHS, t1.AAITM#, t1.AALIC#, t1.AAEQP#, 
+t1.AAADAT, t1.AAAUSR,t1.AAORD#,t2.ITMCQTY, count(t1.AASER#) as Qty, t3.itcls,
+(CASE 
+        WHEN t3.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t3.ITCLS IN ('WVBC','WVHC') THEN 'Foundation'
+        WHEN t3.ITCLS IN ('SLDK') THEN 'RP'
+        WHEN t3.ITCLS LIKE 'T%' THEN 'RP'
+        WHEN t3.ITCLS IN ('ZKIS') THEN 'Bedding'
+        WHEN t3.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t3.ITCLS LIKE 'Z%' AND t3.ITCLS LIKE '%K' THEN 'UnKits'
+        WHEN t3.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t3.ITCLS IN ('BBFR') THEN 'Verona'
+        WHEN t3.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB') THEN 'CG'
+        WHEN t3.ITCLS LIKE 'Z%' THEN 'UPH'
+        ELSE 'Check' END) AS Product,
+(CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END)
+
+FROM DISTLIBL.ACTAUDT t1,AFILELIBL.ITMEXT t2,AMFLIBL.ITEMBL t3 
+
+WHERE (t1.AAADAT Between ? And ?) AND (t1.AATWHS='51') AND (t1.AACOD1='MF') 
+AND (t1.AACOD2='SN') AND (t1.AASER#<>0) and (t1.AAITM#= t2.itnbr) and t1.AATWHS = t3.HOUSE and t1.aaitm# = t3.itnbr and t2.itnbr=t3.itnbr
+
+Group by t1.AACOD1, t1.AACOD2, t1.AATWHS, t1.AAITM#, t1.AALIC#,
+AAEQP#,t1.AAADAT, t1.AAAUSR,t1.AAORD#,t2.ITMCQTY,t3.itcls, 
+(CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END)
+
+
+-- MF BY SN 
+
+SELECT t1.AACOD1, t1.AACOD2, t1.AATWHS, t1.AAITM#, t1.AALIC#, t1.AAEQP#, 
+t1.AAADAT, t1.AAAUSR,t1.AAORD#,t2.ITMCQTY, t1.AASER# as SN, t3.itcls,
+(CASE 
+        WHEN t3.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t3.ITCLS IN ('WVBC','WVHC') THEN 'Foundation'
+        WHEN t3.ITCLS IN ('SLDK') THEN 'RP'
+        WHEN t3.ITCLS LIKE 'T%' THEN 'RP'
+        WHEN t3.ITCLS IN ('ZKIS') THEN 'Bedding'
+        WHEN t3.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t3.ITCLS LIKE 'Z%' AND t3.ITCLS LIKE '%K' THEN 'UnKits'
+        WHEN t3.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t3.ITCLS IN ('BBFR') THEN 'Verona'
+        WHEN t3.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB') THEN 'CG'
+        WHEN t3.ITCLS LIKE 'Z%' THEN 'UPH'
+        ELSE 'Check' END) AS Product,
+(CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END)
+
+FROM DISTLIBL.ACTAUDT t1,AFILELIBL.ITMEXT t2,AMFLIBL.ITEMBL t3 
+
+WHERE (t1.AAADAT Between ? And ?) AND (t1.AATWHS='51') AND (t1.AACOD1='MF') 
+AND (t1.AACOD2='SN') AND (t1.AASER#<>0) and (t1.AAITM#= t2.itnbr) and t1.AATWHS = t3.HOUSE and t1.aaitm# = t3.itnbr and t2.itnbr=t3.itnbr
+
+-- Group by t1.AACOD1, t1.AACOD2, t1.AATWHS, t1.AAITM#, t1.AALIC#,
+-- AAEQP#,t1.AAADAT, t1.AAAUSR,t1.AAORD#,t2.ITMCQTY,t3.itcls, 
+-- (CASE WHEN t1.AAATIM BETWEEN '070000' AND '194459' THEN 'DS' ELSE 'NS' END)
+
+
+
+
+
+
+

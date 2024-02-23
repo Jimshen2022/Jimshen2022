@@ -1,0 +1,8 @@
+Sub ReNameSht()
+    Dim strShtName$, sht As Worksheet, i&
+    On Error Resume Next '当程序运行中出现错误时，继续运行
+    For i = 2 To Cells(Rows.Count, 1).End(xlup).Row '遍历当前表格A列的数据
+        strShtName = Cells(i, 1).Value '将表格A列的值，赋予变量strShtName
+        Worksheets(strShtName).Name = Cells(i, 2).Value '工作表重命名
+    Next
+End Sub

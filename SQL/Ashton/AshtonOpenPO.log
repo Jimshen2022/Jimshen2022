@@ -1,0 +1,29 @@
+
+
+Job started at Tue Jul 13 14:10:00 2021
+
+ERROR: 1060, Duplicate column name 'QTYOR'
+Table:Result
+Sql:CREATE TABLE `afiprod`.`Result`( `ITNBR` char(15) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `HOUSE` char(3) NOT NULL , `ORDNO` char(7) NOT NULL , `VNDNR` char(6) NOT NULL , `PSTTS` char(2) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `STKDT` decimal(7,0) NOT NULL , `DYLDE` decimal(5,0) NOT NULL , `DYLDL` decimal(5,0) NOT NULL , `UUCCIM` char(5) NOT NULL , `DUEDT` decimal(7,0) NOT NULL , `ITMCLSID` char(10) NOT NULL , `PICKPUT` char(15) NOT NULL , `SCOOPQTY` decimal(8,0) NOT NULL , `SKIDSIZE` decimal(8,0) NOT NULL , `DOKDT` decimal(7,0) NOT NULL , `MSNDD` decimal(7,0) NOT NULL , `MSNSD` decimal(7,0) NOT NULL , `VNNMVM` char(25) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `QTDEV` decimal(10,3) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `ITCLS` char(4) NOT NULL )ENGINE=InnoDB DEFAULT CHARSET = utf8 COLLATE utf8_general_ci
+ERROR: Import aborted...
+
+Job started at Tue Jul 13 14:10:58 2021
+
+ERROR: 1060, Duplicate column name 'QTYOR'
+Table:Result
+Sql:CREATE TABLE `afiprod`.`Result`( `ITNBR` char(15) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `HOUSE` char(3) NOT NULL , `ORDNO` char(7) NOT NULL , `VNDNR` char(6) NOT NULL , `PSTTS` char(2) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `STKDT` decimal(7,0) NOT NULL , `DYLDE` decimal(5,0) NOT NULL , `DYLDL` decimal(5,0) NOT NULL , `UUCCIM` char(5) NOT NULL , `DUEDT` decimal(7,0) NOT NULL , `ITMCLSID` char(10) NOT NULL , `PICKPUT` char(15) NOT NULL , `SCOOPQTY` decimal(8,0) NOT NULL , `SKIDSIZE` decimal(8,0) NOT NULL , `DOKDT` decimal(7,0) NOT NULL , `MSNDD` decimal(7,0) NOT NULL , `MSNSD` decimal(7,0) NOT NULL , `VNNMVM` char(25) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `QTDEV` decimal(10,3) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `ITCLS` char(4) NOT NULL )ENGINE=InnoDB DEFAULT CHARSET = utf8 COLLATE utf8_general_ci
+ERROR: Import aborted...
+
+Job started at Tue Jul 13 14:12:09 2021
+
+ERROR: 1060, Duplicate column name 'QTYOR'
+Table:Result
+Sql:CREATE TABLE `afiprod`.`Result`( `ITNBR` char(15) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `HOUSE` char(3) NOT NULL , `ORDNO` char(7) NOT NULL , `VNDNR` char(6) NOT NULL , `PSTTS` char(2) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `STKDT` decimal(7,0) NOT NULL , `DYLDE` decimal(5,0) NOT NULL , `DYLDL` decimal(5,0) NOT NULL , `UUCCIM` char(5) NOT NULL , `DUEDT` decimal(7,0) NOT NULL , `ITMCLSID` char(10) NOT NULL , `PICKPUT` char(15) NOT NULL , `SCOOPQTY` decimal(8,0) NOT NULL , `SKIDSIZE` decimal(8,0) NOT NULL , `DOKDT` decimal(7,0) NOT NULL , `MSNDD` decimal(7,0) NOT NULL , `MSNSD` decimal(7,0) NOT NULL , `VNNMVM` char(25) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `QTDEV` decimal(10,3) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `ITCLS` char(4) NOT NULL )ENGINE=InnoDB DEFAULT CHARSET = utf8 COLLATE utf8_general_ci
+ERROR: Import aborted...
+
+Job started at Tue Jul 13 14:16:39 2021
+
+ERROR: 1060, Duplicate column name 'QTYOR'
+Table:Result
+Sql:CREATE TABLE `afiprod`.`Result`( `ITNBR` char(15) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `HOUSE` char(3) NOT NULL , `ORDNO` char(7) NOT NULL , `VNDNR` char(6) NOT NULL , `PSTTS` char(2) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `STKDT` decimal(7,0) NOT NULL , `DYLDE` decimal(5,0) NOT NULL , `DYLDL` decimal(5,0) NOT NULL , `UUCCIM` char(5) NOT NULL , `DUEDT` decimal(7,0) NOT NULL , `ITMCLSID` char(10) NOT NULL , `PICKPUT` char(15) NOT NULL , `SCOOPQTY` decimal(8,0) NOT NULL , `SKIDSIZE` decimal(8,0) NOT NULL , `DOKDT` decimal(7,0) NOT NULL , `MSNDD` decimal(7,0) NOT NULL , `MSNSD` decimal(7,0) NOT NULL , `VNNMVM` char(25) NOT NULL , `QTYOR` decimal(10,3) NOT NULL , `QTDEV` decimal(10,3) NOT NULL , `STKQT` decimal(10,3) NOT NULL , `ITCLS` char(4) NOT NULL )ENGINE=InnoDB DEFAULT CHARSET = utf8 COLLATE utf8_general_ci
+ERROR: Import aborted...

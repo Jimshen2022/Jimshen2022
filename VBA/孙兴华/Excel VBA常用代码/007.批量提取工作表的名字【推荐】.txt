@@ -1,0 +1,13 @@
+Sub GetShtName()
+    Dim sht As Worksheet, i As Long
+    i = 1 'i初始值为1
+    With Columns(1)
+        .ClearContents '清除A列内容
+        .NumberFormat = "@" '设置单元格格式为文本
+    End With
+    Cells(1, 1) = "工作表名称目录"
+    For Each sht In Worksheets '遍历工作表
+        i = i + 1
+        Cells(i, 1) = sht.Name '在A列记录工作表名称
+    Next
+End Sub

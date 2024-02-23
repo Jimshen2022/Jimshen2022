@@ -1,0 +1,23 @@
+Sub GetFiles()
+    Dim strPath As String, strFileName As String, k As Long
+    With Application.FileDialog(msoFileDialogFolderPicker)
+        '用户选择文件夹路径
+        If .Show Then strPath = .SelectedItems(1) Else Exit Sub
+        '如果用户为选择文件夹则退出程序
+    End With
+    If Right(strPath, 1) <> "\" Then strPath = strPath & "\"
+    Application.ScreenUpdating = False '取消屏幕刷新
+    strFileName = Dir(strPath & "*.*")
+    'dir+通配符获取首个文件名
+    '如果一个文件也无，则返回空
+    Columns(1).Clear: Cells(1, 1) = "目录": k = 1 '清除当前工作表A列数据
+    Do While strFileName <> ""
+        k = k + 1 '累加文件个数
+        ActiveSheet.Hyperlinks.Add Cells(k, 1), strPath & strFileName
+        '创建超链接
+        strFileName = Dir
+        '第2次调用Dir函数，未使用任何参数，则同目录下的下一个文件名
+    Loop
+    Application.ScreenUpdating = True
+    MsgBox "一共读取了：" & k-1 & "个文件名。"
+End Sub

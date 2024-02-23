@@ -1,0 +1,6 @@
+Sub unShtVisible()
+    Dim sht As Worksheet
+    For Each sht In Worksheets '遍历工作表，设置可见
+        sht.Visible = xlSheetVisible
+    Next
+End Sub

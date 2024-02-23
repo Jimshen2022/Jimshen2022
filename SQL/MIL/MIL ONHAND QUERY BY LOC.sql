@@ -1,0 +1,48 @@
+-- MIL AS400 STOCK - 20210813
+
+SELECT t2.ITNBR, t1.ITDSC, t1.ITCLS, t2.HOUSE, t2.LLOCN, t2.FDATE, t2.LQNTY  "OnHand", t2.ORDNO, t2.LBHNO,CEIL(t2.LQNTY/t3.ITMCQTY) cartons,
+(CASE 
+        WHEN t1.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t1.ITCLS IN ('WVBC','WVHC') THEN 'Foundation'
+        WHEN t1.ITCLS IN ('SLDK') THEN 'RP'
+        WHEN t1.ITCLS LIKE 'T%' THEN 'RP'
+        WHEN t1.ITCLS IN ('ZKIS') THEN 'Bedding'
+        WHEN t1.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t1.ITCLS LIKE 'Z%' AND t1.ITCLS LIKE '%K' THEN 'UnKits'
+        WHEN t1.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t1.ITCLS IN ('BBFR') THEN 'Verona'
+        WHEN t1.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB') THEN 'CG'
+        WHEN t1.ITCLS LIKE 'Z%' THEN 'UPH'
+        ELSE 'RawMaterial' END) AS Product
+		
+FROM AMFLIBL.ITEMASA t1, AMFLIBL.SLQNTY t2,AFILELIBL.ITMEXT t3
+WHERE t1.ITNBR = t2.ITNBR and t2.ITNBR = t3.ITNBR AND ((t2.HOUSE='51') OR (t2.HOUSE='52'))
+
+
+
+
+
+
+
+
+
+
+
+SELECT t1.ITNBR, t1.HOUSE, t1.ITCLS, t1.MOHTQ, t1.WHSLC, t1.QTSYR, t2.ITDSC,
+(CASE 
+        WHEN t1.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t1.ITCLS IN ('WVBC','WVHC') THEN 'Foundation'
+        WHEN t1.ITCLS IN ('SLDK') THEN 'RP'
+        WHEN t1.ITCLS LIKE 'T%' THEN 'RP'
+        WHEN t1.ITCLS IN ('ZKIS') THEN 'Bedding'
+		WHEN t1.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t1.ITCLS LIKE 'Z%' AND t1.ITCLS LIKE '%K' THEN 'UnKits'
+		WHEN t1.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t1.ITCLS IN ('BBFR') THEN 'Verona'
+        WHEN t1.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB') THEN 'CG'
+        WHEN t1.ITCLS LIKE 'Z%' THEN 'UPH'
+        ELSE 'Check' END) AS Product
+		
+FROM AMFLIBL.ITEMBL t1, AMFLIBL.ITMRVA t2, AMFLIBL.WHSMST t3
+WHERE t2.ITCLS = t1.ITCLS AND t2.ITNBR = t1.ITNBR AND t1.HOUSE = t3.WHID AND t3.STID = t2.STID AND ((t1.MOHTQ<>0) AND t1.HOUSE IN ('51','52'))
+ORDER BY t1.ITNBR

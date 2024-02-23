@@ -1,0 +1,98 @@
+Sub SplitShts()
+    Dim d As Object, sht As Worksheet
+    Dim aData, aResult, aTemp, aKeys, i&, j&, k&, x&
+    Dim rngData As Range, rngGist As Range
+    Dim lngTitleCount&, lngGistCol&, lngColCount&
+    Dim rngFormat As Range, aRef, strYesOrNo As String
+    Dim strKey As String, strTemp As String
+    On Error Resume Next '忽略错误，程序继续运行
+    Set d = CreateObject("scripting.dictionary")
+    Set rngGist = Application.InputBox("请框选拆分依据列！只能选择单列单元格区域！", Title:="提示", Type:=8)
+    '用户选择的拆分依据列
+    lngGistCol = rngGist.Column
+    '拆分依据列的列标
+    lngTitleCount = Val(Application.InputBox("请输入总表标题行的行数？", Default:=1))
+    '用户设置总表的标题行数
+    If lngTitleCount < 0 Then MsgBox "标题行数不能为负数，程序退出。": Exit Sub
+    strYesOrNo = MsgBox("是否需要在分表保留总表格式？", vbYesNo)
+    Set rngData = rngGist.Parent.UsedRange
+    '总表的数据区域
+    Set rngFormat = rngGist.Parent.Cells
+    '总表的单元格区域用于粘贴总表格式
+    aData = rngData.Value '数据源装入数组
+    lngGistCol = lngGistCol - rngData.Column + 1
+    '计算依据列在数组中的位置
+    lngColCount = UBound(aData, 2)
+    '数据源的列数
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    ReDim aRef(1 To UBound(aData))
+    For i = 1 To UBound(aData) '处理依据列的异常值，空白/错误值/整行空白等
+        If IsError(aData(i, lngGistCol)) Then
+            aRef(i) = "错误值"
+        ElseIf aData(i, lngGistCol) = "" Then
+            strTemp = "" '判断是否整行数据为空
+            For j = 1 To lngColCount
+                strTemp = strTemp & aData(i, j)
+            Next
+            If strTemp = "" Then '如果整行为空
+                aRef(i) = "整行空白"
+            Else
+                aRef(i) = "空白单元格"
+            End If
+        Else
+            strKey = aData(i, lngGistCol)
+            aRef(i) = strKey
+        End If
+    Next
+    For i = lngTitleCount + 1 To UBound(aData)
+        strKey = aRef(i)
+        If strKey <> "整行空白" Then
+            If Not d.exists(strKey) Then
+            '字典中不存在关键字时则遍历建表
+                d(strKey) = ""
+                ReDim aResult(1 To UBound(aData), 1 To lngColCount) '声明一个结果数组
+                k = 0
+                For x = lngTitleCount + 1 To UBound(aData) '遍历数据源
+                    strTemp = aRef(x)
+                    If strTemp = strKey Then '如果记录符合条件，则装入结果数组
+                        k = k + 1
+                        For j = 1 To lngColCount
+                            aResult(k, j) = aData(x, j)
+                        Next
+                    End If
+                Next
+                For Each sht In ActiveWorkbook.Worksheets '删除旧表
+                    If sht.Name = strKey Then sht.Delete
+                Next
+                With Worksheets.Add(, Sheets(Sheets.Count))
+                '新建一个工作表
+                    .Name = strKey
+                    .Range("a1").Resize(UBound(aData), lngColCount).NumberFormat = "@"
+                    '设置单元格为文本格式
+                    If lngTitleCount > 0 Then .Range("a1").Resize(lngTitleCount, lngColCount) = aData
+                    '标题行
+                    .Range("a1").Offset(lngTitleCount, 0).Resize(k, lngColCount) = aResult
+                    '写入数据
+                    If strYesOrNo = vbYes Then '如果用户选择保留总表格式
+                        rngFormat.Copy
+                        .Range("a1").PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
+                         '复制粘贴总表的格式
+                        .Range("a1").Offset(lngTitleCount + k, 0).Resize(UBound(aData) - k - lngTitleCount, 1).EntireRow.Delete
+                        '删除多余的格式单元格
+                    End If
+                    .Range("a1").Select
+                End With
+            End If
+        End If
+    Next
+    rngData.Parent.Activate '回到总表
+    Application.ScreenUpdating = True
+    Application.DisplayAlerts = True
+    Set d = Nothing
+    Set rngData = Nothing
+    Set rngGist = Nothing
+    Set rngFormat = Nothing
+    Erase aData: Erase aResult
+    MsgBox "数据拆分完成！"
+End Sub

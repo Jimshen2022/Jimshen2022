@@ -1,0 +1,19 @@
+
+
+
+SELECT t1.ORDNO AS "PO#",t1.VNDNR AS "VendorCode",t1.ACTDT AS "Actual order placed date",t1.HOUSE,t1.ITNBR,t1.QTYOR AS "OrderQty", t1.STKPR/6.36 as "Stocking unit price($USD)",
+t1.QTYOR*t1.STKPR/6.36 as "PO Amt($USD)",
+t1.UMORD,t1.ITDSC,t1.STKQT AS "Quantity received to stock",t1.ITCLS,t1.STAIC AS "Item order status code",t1.STKDT AS "Date received to stock",t1.DUEDT AS "Due date"
+FROM AMFLIBQ.POITEM t1
+WHERE t1.VNDNR IN ('642727')
+
+
+	
+
+
+SELECT t2.ORDNO, t1.CUSNM, t2.CCUSNO, t2.ITNBR, t2.COQTY, t2.QTYSH, t2.QTYBO, t4.TKNDAT, t4.RQSDAT, t2.MFIDT, t2.IAFLG, t4.SHPTO#, t2.ISLPR, t3.CUSPO
+
+WHERE t3.ORDNO = t2.ORDNO AND t2.ORDNO = t4.XORDNO AND t4.CUSTNO = t1.CUSNO
+
+
+FROM AFILELIBQ.ACUSMASJ t1, AFILELIBQ.CODATAN t2, AFILELIBQ.COMAST t3, AFILELIBQ.EXTORD t4

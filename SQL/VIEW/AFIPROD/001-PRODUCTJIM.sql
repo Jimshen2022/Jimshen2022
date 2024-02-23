@@ -1,0 +1,18 @@
+CREATE VIEW PRODUCTJIM AS 
+SELECT t1.ITNBR, t1.ITCLS,
+(CASE 
+        WHEN t1.ITCLS LIKE 'TAF%' THEN 'RP'
+        WHEN t1.ITCLS IN ('PACS') THEN 'UnKits'
+        WHEN t1.ITCLS LIKE 'Z%' AND t1.ITCLS LIKE '%K' THEN 'UnKits'
+        WHEN t1.ITCLS IN ('ZACM','ZASU','ZMLH','ZMLR','ZUSR','ZUSU','ZVUC','ZXUC','ZUSU','ZUMU','ZAMU','ZASM','ZASR','ZDMA','ZMUC','ZSUS','ZUMS','ZUSM','ZVMA','ZVUS','ZXLH','ZXLM','ZXLR','ZXMS','ZXMU') THEN 'UPH'
+        WHEN t1.ITCLS IN ('ZDAA','ZDAY','ZVAA','ZDAB','ZDAW','ZDYB','ZDBC','ZABC','ZECD') THEN 'CG'
+        WHEN t1.ITCLS IN ('ZKIS') THEN 'Bedding'		
+        WHEN t1.ITCLS IN ('WPLS') THEN 'Plastics'
+        WHEN t1.ITCLS IN ('WVBC','WVCS') THEN 'Foundation'		
+        WHEN t1.ITCLS IN ('PANL') THEN 'Panel'
+        WHEN t1.ITCLS IN ('ZKIZ') THEN 'ZipperCover'
+        WHEN t1.ITCLS IN ('BBFR','WVHC') THEN 'Verona'		
+        WHEN t1.ITCLS NOT LIKE 'Z%' THEN 'Raw'
+        ELSE 'Check' END) AS Product	
+FROM AMFLIBL.ITMRVA t1
+WHERE t1.HOUSE IN ('51')

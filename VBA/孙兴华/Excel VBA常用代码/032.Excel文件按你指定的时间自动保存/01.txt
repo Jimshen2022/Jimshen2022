@@ -1,0 +1,9 @@
+Sub otime()
+    '10秒后自动运行WbSave过程
+    Application.OnTime Now() + TimeValue("00:00:10"), "WbSave"
+End Sub
+Sub WbSave()
+    ThisWorkbook.Save '保存本工作簿
+    Call otime  '再次运行otime过程
+End Sub
+

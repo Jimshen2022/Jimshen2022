@@ -1,0 +1,76 @@
+
+
+'示例1：后期绑定 - For Each遍历Keys
+Sub DEMO1()
+    Dim dic As Object
+    Set dic = CreateObject("scripting.dictionary")
+    For i = 1 To 3
+        dic(i) = i
+    Next
+    For Each d In dic.Keys:
+        Debug.Print d, dic(d)
+    Next
+End Sub
+
+' 【代码解析】
+' 第3行代码使用CreateObject创建字典对象。
+' 第4~6行代码循环添加字典键值。
+' 第7~9行代码循环遍历字典对象。
+' 第7行代码使用For Each循环遍历字典对象的Keys集合。
+' 第8行代码中d为字典对象的键，dic(d)为字典对象对应的值。
+
+
+'示例2：后期绑定 - For遍历Keys，Items
+Sub DEMO2()
+    Dim dic As Object
+    Set dic = CreateObject("scripting.dictionary")
+    For i = 1 To 3
+        dic(i) = i
+    Next
+    For i = 0 To dic.Count - 1
+        Debug.Print dic.Keys(i), dic.Items(i) '运行时错误451
+    Next i
+End Sub
+' 【代码解析】
+' 第7~9行代码与示例略有不同。
+' 第7行代码中dic.Count返回值为字典对象中键值对的个数。
+' 第8行代码使用索引值引用集合中的对象，这也是常用方法之一，但是此处会出现运行时错误451。
+
+
+
+
+' 示例3：前期绑定 - For遍历Keys，Items
+' 运行示例代码前需要引用“Microsoft Scripting Runtime”扩展库。
+Sub DEMO3()
+    Dim dic As Scripting.Dictionary
+    Set dic = CreateObject("scripting.dictionary")
+    For i = 1 To 3
+        dic(i) = i
+    Next
+    For i = 0 To dic.Count - 1
+        Debug.Print dic.Keys(i), dic.Items(i)
+    Next i
+End Sub
+
+
+' 示例4：后期绑定 - For遍历Keys，Items
+Sub DEMO4()
+    Dim dic As Object
+    Set dic = CreateObject("scripting.dictionary")
+    For i = 1 To 3
+        dic(i) = i
+    Next
+    For i = 0 To dic.Count - 1
+        Debug.Print dic.Keys()(i), dic.Items()(i)
+    Next i
+End Sub
+
+' 【代码解析】
+' 后期绑定也可以使用For循环，只是和通常的写法略有不同，第8行代码可以正常运行。
+
+
+
+
+'————————————————
+'版权声明：本文为CSDN博主「taller_2000」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+'原文链接：https://blog.csdn.net/taller_2000/article/details/125110989

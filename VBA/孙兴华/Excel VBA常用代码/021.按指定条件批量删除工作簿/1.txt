@@ -1,0 +1,19 @@
+Sub GetFiles()
+    Dim strPath As String, strFileName As String, k As Long
+    With Application.FileDialog(msoFileDialogFolderPicker)
+        If .Show Then strPath = .SelectedItems(1) Else: Exit Sub
+        '获取用户选择的文件夹的路径，如果未选取，则退出程序
+    End With
+    If Right(strPath, 1) <> "\" Then strPath = strPath & "\"
+    Application.ScreenUpdating = False
+    Range("a:b").Clear: k = 1
+    '清除A:B列的所有
+    Cells(1, 1) = "旧文件名": Cells(1, 2) = "是否删除"
+    strFileName = Dir(strPath & "*.xls*")
+    Do While strFileName <> ""
+        k = k + 1
+        Cells(k, 1) = strPath & strFileName
+        strFileName = Dir
+    Loop
+    Application.DisplayAlerts = True
+End Sub

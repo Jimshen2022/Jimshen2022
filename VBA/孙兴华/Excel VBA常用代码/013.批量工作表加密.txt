@@ -1,0 +1,38 @@
+Sub ProtectSht()
+    Dim strAds As String, sht As Worksheet
+    Dim strKey As String, strTemp As String
+    Dim rng As Range, strMsg As String
+    Dim strNoShtName As String, strYesShtName As String
+    On Error Resume Next
+    strAds = InputBox("请输入单元格保存范围，例如A1:B10." & vbCr _
+                                & "可以设置不连续单元格，中间请以逗号分隔。比如A1:B10,D2:D8" & vbCr _
+                                & "如果需要全表保护，可以直接确定。", Default:="全表保护")
+    If StrPtr(strAds) = False Then Exit Sub
+    If strAds = "全表保护" Then strAds = Cells.Address
+    Set rng = Range(strAds) '测试输入的单元格区域是否有效
+    If Err Then MsgBox "你输入的单元格区域地址不是正确的格式，请重新操作。": Exit Sub
+    strKey = InputBox("请输入保护密码。") '第一次输入密码
+    If StrPtr(strKey) = False Then Exit Sub
+    strTemp = InputBox("请再次输入保护密码。") '第二次输入密码
+    If StrPtr(strKey) = False Then Exit Sub
+    If strKey <> strTemp Then MsgBox "你两次输入的密码不一致，系统退出，请重新操作。": Exit Sub
+    For Each sht In Worksheets '遍历工作表加密保护
+        With sht
+            If .ProtectContents = False Then '如果工作表未保护
+                .Cells.Locked = False '全部单元格区域取消锁定
+                .Range(strAds).Locked = True '需要保护的区域锁定
+                .Protect strKey, True, True, True '保护工作表，只允许编辑非锁定区域
+                strYesShtName = strYesShtName & "," & .Name '保护成功的工作表名称
+            Else
+                strNoShtName = strNoShtName & "," & .Name '自身已有保护功能的工作表
+            End If
+        End With
+    Next
+    If strYesShtName <> "" Then strMsg = "工作表：" & Mid(strYesShtName, 2) & "的" & strAds & "区域保护完成"
+    If strNoShtName <> "" Then strMsg = strMsg & vbCrLf & "以下工作表自身已有保护，无法再次保护：" & Mid(strNoShtName, 2)
+    MsgBox (strMsg)
+End Sub
+
+
+
+

@@ -1,0 +1,50 @@
+Sub AutoAddLink()
+    Dim strFldPath As String
+    With Application.FileDialog(msoFileDialogFolderPicker)
+        '用户选择指定文件夹
+         .Title = "请选择指定文件夹。"
+        If  .Show Then strFldPath =  .SelectedItems(1) Else Exit Sub
+        '未选择文件夹则退出程序，否则将地址赋予变量strFldPath
+    End With
+    Application.ScreenUpdating = False
+    '关闭屏幕刷新
+    Range("a:b").ClearContents
+    Range("a1:b1") = Array("文件夹", "文件名")
+    Call SearchFileToHyperlinks(strFldPath)
+    '调取自定义函数SearchFileToHyperlinks
+    Range("a:b").EntireColumn.AutoFit
+    '自动列宽
+    Application.ScreenUpdating = True
+    '重开屏幕刷新
+End Sub
+Function SearchFileToHyperlinks(ByVal strFldPath As String) As String
+    Dim objFld As Object
+    Dim objFile As Object
+    Dim objSubFld As Object
+    Dim strFilePath As String
+    Dim lngLastRow As Long
+    Dim intNum As Integer
+    Set objFld = CreateObject("Scripting.FileSystemObject").GetFolder(strFldPath)
+    '创建FileSystemObject对象引用
+    For Each objFile In objFld.Files
+        '遍历文件夹内的文件
+        lngLastRow = Cells(Rows.Count, 1).End(xlUp).Row + 1
+        strFilePath = objFile.Path
+        intNum = InStrRev(strFilePath, "\")
+        '使用instrrev函数获取最后文件夹名截至的位置
+        Cells(lngLastRow, 1) = Left(strFilePath, intNum - 1)
+        '文件夹地址
+        Cells(lngLastRow, 2) = Mid(strFilePath, intNum + 1)
+        '文件名
+        ActiveSheet.Hyperlinks.Add Anchor:=Cells(lngLastRow, 2),  _
+                Address:=strFilePath, ScreenTip:=strFilePath
+        '添加超链接
+    Next objFile
+    For Each objSubFld In objFld.SubFolders
+        '遍历文件夹内的子文件夹
+        Call SearchFileToHyperlinks(objSubFld.Path)
+    Next objSubFld
+    Set objFld = Nothing
+    Set objFile = Nothing
+    Set objSubFld = Nothing
+End Function

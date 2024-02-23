@@ -1,0 +1,102 @@
+-- trip detail information
+
+
+
+Select t1.BDITM#,t1.BDITMD,t1.BDICLS,sum(t1.BDITQT) Qty, sum(t1.BDITCT) Cubes, sum(t1.BDITWT) Weight
+from (
+Select  BDTRP#,BDITM#,BDITMD,BDICLS,BDITQT,BDITCT,BDITWT
+from DISTLIBQ.BTTRIPD t1
+Where BDTRP# IN (?,?)
+order by t1.BDTRP#,t1.bditm#
+) t1
+group by t1.BDITM#,t1.BDITMD,t1.BDICLS
+
+
+
+
+
+
+
+
+
+
+
+-- More trip detial information:
+--Trip #	Drop #	BOL Ref#	Customer#	Creation Date	Order #	Item Seq#	Item Number	Item Description	Common Item#	Invoice Number	BOL Ctl#	Item Class	Cmdty Class	Total Item Qty	Total Item Cubes	Total Item Weight	Creation User	Creation Time	Creation Prog	Ship To
+--BDTRP#	BDDRP#	BDREF#	BDCUS#	BDCDAT	BDORD#	BDISEQ	BDITM#	BDITMD	BDCITM	BDINVN	BDCTL#	BDICLS	BDCCLS	BDITQT	BDITCT	BDITWT	BDCUSR	BDCTIM	BDCPGM	BDSHPNO
+
+-- BTTRIPD (Current)
+Select  *
+from DISTLIBQ.BTTRIPD t1
+order by t1.BDTRP#,t1.bditm#
+
+-- BTTRIPH(Current)
+Select  *
+from DISTLIBQ.BTTRIPH t1
+
+
+-- BTTRIPH+BTTRIPD(Current)
+Select  t1.BDTRP#,t1.BDCUS#,t1.BDORD#,t1.BDITM#,t1.BDITMD,t1.BDINVN,t1.BDCTL#,t1.BDICLS,t1.BDCCLS,t1.BDITQT,t1.BDITCT,
+t1.BDITWT,t1.BDCTIM,t1.BDSHPNO,t2.BHTRP#,t2.BHWHS#,t2.BHTRPS,t2.BHPRVS,t2.BHCNTI,t2.BHCNTN,t2.BHSEL1,t2.BHLUSR,t2.BHLDAT,
+t2.BHLTIM,t2.BHLTYP,T2.BHRDAT, t2.BHRTIM,t2.BHZDAT,T2.BHZTIM,T2.BHTSNS
+from DISTLIBQ.BTTRIPD t1 full join DISTLIBQ.BTTRIPH t2 on t1.BDTRP# = t2.BHTRP# 
+where t2.BHWHS# IN ('232') and t2.BHLDAT between 20210601 and 20210721
+order by t2.BHLDAT,t1.BDTRP#,t1.BDITM#
+
+
+
+-- Trip(Current+Archived)
+
+(Select  t1.BDTRP#,t1.BDCUS#,t1.BDORD#,t1.BDITM#,t1.BDITMD,t1.BDINVN,t1.BDCTL#,t1.BDICLS,t1.BDCCLS,t1.BDITQT,t1.BDITCT,
+t1.BDITWT,t1.BDCTIM,t1.BDSHPNO,t2.BHTRP#,t2.BHWHS#,t2.BHTRPS,t2.BHPRVS,t2.BHCNTI,t2.BHCNTN,t2.BHSEL1,t2.BHLUSR,t2.BHLDAT,t2.BHLTIM,t2.BHLTYP
+from DISTLIBQ.BTTRIPD t1 full join DISTLIBQ.BTTRIPH t2 on t1.BDTRP# = t2.BHTRP# 
+where t2.BHWHS# IN ('232') and t2.BHLDAT between 20210101 and 20210603 and t2.BHLTYP in ('P')
+order by t2.BHLDAT,t1.BDTRP#,t1.BDITM#)
+
+union
+(Select  t1.BDTRP#,t1.BDCUS#,t1.BDORD#,t1.BDITM#,t1.BDITMD,t1.BDINVN,t1.BDCTL#,t1.BDICLS,t1.BDCCLS,t1.BDITQT,t1.BDITCT,t1.BDITWT,t1.BDCTIM,t1.BDSHPNO,t2.BHTRP#,t2.BHWHS#,t2.BHTRPS,t2.BHPRVS,t2.BHCNTI,t2.BHCNTN,t2.BHSEL1,t2.BHLUSR,t2.BHLDAT,t2.BHLTIM,t2.BHLTYP
+
+from ASHLEYARCQ.BTTRIPDA t1 full join ASHLEYARCQ.BTTRIPH t2 on t1.BDTRP# = t2.BHTRP#
+where t2.BHWHS# IN ('232') and t2.BHLDAT between 20210101 and 20210603 and t2.BHLTYP in ('P')
+order by t2.BHLDAT,t1.BDTRP#,t1.BDITM#)
+
+
+
+-- BTTRIPH+BTTRIPDA(Archived)
+
+Select  t1.BDTRP#,t1.BDCUS#,t1.BDORD#,t1.BDITM#,t1.BDITMD,t1.BDINVN,t1.BDCTL#,t1.BDICLS,t1.BDCCLS,t1.BDITQT,t1.BDITCT,t1.BDITWT,t1.BDCTIM,
+t1.BDSHPNO,t2.BHTRP#,t2.BHWHS#,t2.BHTRPS,t2.BHPRVS,t2.BHCNTI,t2.BHCNTN,t2.BHSEL1,t2.BHLUSR,t2.BHLDAT,t2.BHLTIM,t2.BHLTYP
+from ASHLEYARCQ.BTTRIPDA t1 full join ASHLEYARCQ.BTTRIPH t2 on t1.BDTRP# = t2.BHTRP#
+where t2.BHWHS# IN ('232') and t2.BHLDAT between 20210301 and 20210603 and t2.BHLTYP in ('P')
+order by t2.BHLDAT,t1.BDTRP#,t1.BDITM#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

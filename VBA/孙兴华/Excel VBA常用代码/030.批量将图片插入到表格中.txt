@@ -1,0 +1,82 @@
+Sub InsertPic()
+    Dim arr, i&, k&, n&, b As Boolean
+    Dim strPicName$, strPicPath$, strFdPath$, shp As Shape
+    Dim rngData As Range, rngEach As Range, rngWhere As Range, strWhere As String
+    'On Error Resume Next
+    '用户选择图片所在的文件夹
+    With Application.FileDialog(msoFileDialogFolderPicker)
+       If .Show Then strFdPath = .SelectedItems(1) Else: Exit Sub
+    End With
+    If Right(strFdPath, 1) <> "\" Then strFdPath = strFdPath & "\"
+    Set rngData = Application.InputBox("请选择图片名称所在的单元格区域", Type:=8)
+    '用户选择需要插入图片的名称所在单元格范围
+    Set rngData = Intersect(rngData.Parent.UsedRange, rngData)
+    'intersect语句避免用户选择整列单元格，造成无谓运算的情况
+    If rngData Is Nothing Then MsgBox "选择的单元格范围不存在数据！": Exit Sub
+    strWhere = InputBox("请输入图片偏移的位置，例如上1、下1、左1、右1", , "右1")
+    '用户输入图片相对单元格的偏移位置。
+    If Len(strWhere) = 0 Then Exit Sub
+    x = Left(strWhere, 1)
+    '偏移的方向
+    If InStr("上下左右", x) = 0 Then MsgBox "你未输入偏移方位。": Exit Sub
+    y = Val(Mid(strWhere, 2))
+    '偏移的值
+    Select Case x
+        Case "上"
+        Set rngWhere = rngData.Offset(-y, 0)
+        Case "下"
+        Set rngWhere = rngData.Offset(y, 0)
+        Case "左"
+        Set rngWhere = rngData.Offset(0, -y)
+        Case "右"
+        Set rngWhere = rngData.Offset(0, y)
+    End Select
+    Application.ScreenUpdating = False
+    rngData.Parent.Parent.Activate '用户选定的激活工作簿
+    rngData.Parent.Select
+    For Each shp In ActiveSheet.Shapes
+    '如果旧图片存放在目标图片存放范围则删除
+        If Not Intersect(rngWhere, shp.TopLeftCell) Is Nothing Then shp.Delete
+    Next
+    x = rngWhere.Row - rngData.Row
+    y = rngWhere.Column - rngData.Column
+    '偏移的坐标
+    arr = Array(".jpg", ".jpeg", ".bmp", ".png", ".gif")
+    '用数组变量记录五种文件格式
+    For Each rngEach In rngData
+    '遍历选择区域的每一个单元格
+        strPicName = rngEach.Text
+        '图片名称
+        If Len(strPicName) Then
+        '如果单元格存在值
+            strPicPath = strFdPath & strPicName
+            '图片路径
+            b = False
+            '变量标记是否找到相关图片
+            For i = 0 To UBound(arr)
+            '由于不确定用户的图片格式，因此遍历图片格式
+                If Len(Dir(strPicPath & arr(i))) Then
+                '如果存在相关文件
+                    Set shp = ActiveSheet.Shapes.AddPicture( _
+                        strPicPath & arr(i), False, True, _
+                        rngEach.Offset(x, y).Left + 5, _
+                        rngEach.Offset(x, y).Top + 5, _
+                        20, 20)
+                    shp.Select
+                    With Selection
+                        .ShapeRange.LockAspectRatio = msoFalse
+                        '撤销锁定图片纵横比
+                        .Height = rngEach.Offset(x, y).Height - 10 '图片高度
+                        .Width = rngEach.Offset(x, y).Width - 10 '图片宽度
+                    End With
+                    b = True '标记找到结果
+                    n = n + 1 '累加找到结果的个数
+                    Range("a1").Select: Exit For '找到结果后就可以退出文件格式循环
+                End If
+            Next
+            If b = False Then k = k + 1 '如果没找到图片累加个数
+        End If
+    Next
+    Application.ScreenUpdating = True
+    MsgBox "共处理成功" & n & "个图片，另有" & k & "个非空单元格未找到对应的图片。"
+End Sub
